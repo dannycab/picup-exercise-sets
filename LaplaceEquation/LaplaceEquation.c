@@ -6,30 +6,43 @@
 
 int main () {
 
-    // Declare variables and output file
+    // Declare variables, mesh, and output file
 
     int n,m,k,imax;
     double L,W,Dx,Dy,R,beta,denom,epsilon;
     double *x,*y;
+    double **X, **Y, **V,**VN,**err;
     FILE *V_file;
 
     // Initialize variables needed for mesh
     L = 5.0;
     W = 5.0;
-    n = 50;
-    m = 50;
+    n = 10;
+    m = 10;
     Dx = L/n;
     Dy = W/m;
-
-    // Declare mesh
-    // X,Y = np.meshgrid(x,y); Need to finish this
-    double X[n][m],Y[n][m],V[m][n],VN[m][n],err[m][n];
 
     // Allocate memory for spatial vectors
     x=(double*)calloc(n, sizeof(double));
     y=(double*)calloc(m, sizeof(double));
 
-    // How do I allocate memory for a matrix?
+    // Allocate memory for matrices
+    X=(double**) malloc(n, sizeof(double));
+    Y=(double**) malloc(n, sizeof(double));
+    V=(double**) malloc(n, sizeof(double));
+    VN=(double**) malloc(n, sizeof(double));
+    err=(double**) malloc(n, sizeof(double));
+
+    for (int i = 0; i < n; i++) {
+
+        X[i] = (double*) malloc(m, sizeof(double));
+        Y[i] = (double*) malloc(m, sizeof(double));
+        V[i] = (double*) malloc(m, sizeof(double));
+        VN[i] = (double*) malloc(m, sizeof(double));
+        err[i] = (double*) malloc(m, sizeof(double));
+
+    }
+
 
     // Open file for output
     V_file = fopen("VFile.dat","w");
@@ -70,9 +83,7 @@ int main () {
         k += 1;
         
         errmax = np.max(err); 
-        
-        #print(err)
-        
+               
         if errmax < epsilon:
             
             print("Convergence after", k, "iterations.");
@@ -84,24 +95,28 @@ int main () {
             print("Max error on mesh: ", errmax);
 
 
-// plt.figure()
-// CS = plt.contour(X, Y, V.transpose())
-// plt.title('Potential contours')
-// plt.xlim((0,L));
-// plt.ylim((0,W));
-// CB = plt.colorbar(CS, shrink=0.8, extend='both');
 
-// # 3D Plot
-// fig = plt.figure()
-// ax = fig.gca(projection='3d')
-// surf = ax.plot_surface(X, Y, V, rstride=1, cstride=1, cmap=cm.coolwarm,
-//                        linewidth=0, antialiased=False)
-// fig.colorbar(surf, shrink=0.5, aspect=5)
+    // Free memory solution written to disk
 
-// ax.set_xlabel('x')
-// ax.set_ylabel('y')
-// ax.set_zlabel('Potential (V)')
-// plt.show()
+    for (i = 0; i < n; i++){
 
+        free(X[i]);
+        free(Y[i]);
+        free(V[i]);
+        free(VN[i]);
+        free(err[i]);
+
+    }
+
+    free(X);
+    free(Y);
+    free(V);
+    free(VN);
+    free(err);
+
+
+    fclose(V_file);
+
+}
 
 
